@@ -16,7 +16,7 @@ main =
 
 
 type alias Model =
-    {}
+    { hoge : String }
 
 
 type Msg
@@ -25,7 +25,7 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( {}, Cmd.none )
+    ( { hoge = "hogehoge" }, Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
