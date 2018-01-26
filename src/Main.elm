@@ -1,12 +1,42 @@
-module View exposing (..)
+module Main exposing (..)
 
-import Html exposing (Html, div, img, text, textarea, button)
+import Html exposing (program, Html, div, img, text, textarea, button)
 import Html.Attributes exposing (src, value)
 import Styles as Styles
 
 
-view : Html msg
-view =
+main : Program Never Model Msg
+main =
+    program
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = always Sub.none
+        }
+
+
+type alias Model =
+    {}
+
+
+type Msg
+    = Hoge
+
+
+init : ( Model, Cmd Msg )
+init =
+    ( {}, Cmd.none )
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        Hoge ->
+            ( model, Cmd.none )
+
+
+view : Model -> Html msg
+view model =
     div [ Styles.mainWrap ]
         [ div [ Styles.postForm ]
             [ div [ Styles.formLeft ]
