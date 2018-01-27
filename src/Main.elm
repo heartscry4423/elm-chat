@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (Html, button, div, img, program, text, textarea)
 import Html.Attributes exposing (src, value)
-import Styles as Styles
+import Styles
 
 
 main : Program Never Model Msg
