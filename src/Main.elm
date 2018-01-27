@@ -16,7 +16,11 @@ main =
 
 
 type alias Model =
-    { hoge : String }
+    { imageUrl : String
+    , name : String
+    , message : String
+    , createdAt : String
+    }
 
 
 type Msg
@@ -25,7 +29,11 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( { hoge = "hogehoge" }, Cmd.none )
+    ( { imageUrl = "https://imgcp.aacdn.jp/img-c/680/auto/tipsplus/series/246/20160608_1465380998273.jpg"
+    , name = "ダテちゃん"
+    , message = "寿司食いてえ"
+    , createdAt = "2018/01/27 13:00"
+    }, Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -49,12 +57,12 @@ view model =
             ]
         , div [ Styles.talk ]
             [ div [ Styles.talkLeft ]
-                [ img [ Styles.posterImg, src "https://imgcp.aacdn.jp/img-c/680/auto/tipsplus/series/246/20160608_1465380998273.jpg" ] [] ]
+                [ img [ Styles.posterImg, src model.imageUrl ] [] ]
             , div [ Styles.talkRight ]
-                [ div [ Styles.posterName ] [ text "伊達ちゃん" ]
-                , div [ Styles.message ] [ text "ピザ食いてえ" ]
+                [ div [ Styles.posterName ] [ text model.name ]
+                , div [ Styles.message ] [ text model.message ]
                 , div [ Styles.talkFooter ]
-                    [ text "2018/01/27 13:00" ]
+                    [ text model.createdAt]
                 ]
             ]
         , div [ Styles.talk ]
