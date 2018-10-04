@@ -69,15 +69,15 @@ initialModel =
 
 initMembers : List Member
 initMembers =
-    [ Member "m1" "伊達ちゃん" "https://imgcp.aacdn.jp/img-c/680/auto/tipsplus/series/246/20160608_1465380998273.jpg"
-    , Member "m2" "とみざわ" "https://d19vfv6p26udb5.cloudfront.net/wp-content/uploads/2016/10/03023515/gorilla-752875_960_720-768x544.jpg"
+    [ Member "m1" "パソコンを持つ人" "https://1.bp.blogspot.com/-LoQvKFjTMCo/W3abXvFwxQI/AAAAAAABOAw/Gh5lV3wyGjwaqI-pV9QP1uPi-JRp6zmoACLcBGAs/s180-c/job_computer_technocrat.png"
+    , Member "m2" "ケバブ屋さん" "https://4.bp.blogspot.com/-3ndKbo5JNcw/Ws2u06_gISI/AAAAAAABLRk/xz53-cS1koA6iqzrbJ1CntZO0nteFt-qgCLcBGAs/s180-c/food_kebabu_man.png"
     ]
 
 
 initTalks : List Talk
 initTalks =
-    [ Talk "t1" "m1" "ピザ食いてえ"
-    , Talk "t2" "m2" "ちょっと何いってるかわかんないっす"
+    [ Talk "t1" "m1" "こんにちは"
+    , Talk "t2" "m2" "ケバブはじめました"
     ]
 
 
@@ -111,7 +111,7 @@ view model =
         , div [ class "main-wrap" ]
             [ div [ class "post-form" ]
                 [ div [ class "form-left" ]
-                    [ img [ class "self-img", src "https://d19vfv6p26udb5.cloudfront.net/wp-content/uploads/2016/10/03023515/gorilla-752875_960_720-768x544.jpg" ] []
+                    [ img [ class "self-img", src "https://4.bp.blogspot.com/-3ndKbo5JNcw/Ws2u06_gISI/AAAAAAABLRk/xz53-cS1koA6iqzrbJ1CntZO0nteFt-qgCLcBGAs/s180-c/food_kebabu_man.png" ] []
                     ]
                 , div [ class "form-right" ]
                     [ textarea [ class "form-area", value model.field, onInput ChangeInput ] []
