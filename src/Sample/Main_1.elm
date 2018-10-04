@@ -53,6 +53,11 @@ sampleTalk2 =
     Talk "t2" "m2" "ケバブはじめました"
 
 
+sampleTalks : List Talk
+sampleTalks =
+    [ sampleTalk1, sampleTalk2 ]
+
+
 sampleMembers : List Member
 sampleMembers =
     [ Member "m1" "パソコンを持つ人" "https://1.bp.blogspot.com/-LoQvKFjTMCo/W3abXvFwxQI/AAAAAAABOAw/Gh5lV3wyGjwaqI-pV9QP1uPi-JRp6zmoACLcBGAs/s180-c/job_computer_technocrat.png"
@@ -111,11 +116,7 @@ view model =
                     , button [ class "post-button", onClick ClickedPostButton ] [ text "投稿！" ]
                     ]
                 ]
-            , div [ class "talks" ]
-                [ viewEditingTalk
-                , viewTalk sampleTalk1
-                , viewTalk sampleTalk2
-                ]
+            , div [ class "talks" ] (sampleTalks |> List.map viewTalk)
             ]
         ]
 

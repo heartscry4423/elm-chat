@@ -22,6 +22,9 @@ main =
 
 type alias Model =
     { loginedMemberId : String
+    , members : List Member
+    , talks : List Talk
+    , newTalkTextAreaValue : String
     }
 
 
@@ -53,6 +56,11 @@ sampleTalk2 =
     Talk "t2" "m2" "ケバブはじめました"
 
 
+sampleTalks : List Talk
+sampleTalks =
+    [ sampleTalk1, sampleTalk2 ]
+
+
 sampleMembers : List Member
 sampleMembers =
     [ Member "m1" "パソコンを持つ人" "https://1.bp.blogspot.com/-LoQvKFjTMCo/W3abXvFwxQI/AAAAAAABOAw/Gh5lV3wyGjwaqI-pV9QP1uPi-JRp6zmoACLcBGAs/s180-c/job_computer_technocrat.png"
@@ -66,6 +74,7 @@ sampleMembers =
 
 type Msg
     = ClickedPostButton
+    | ChangedNewTalkTextAreaValue String
 
 
 init : ( Model, Cmd Msg )
@@ -75,7 +84,7 @@ init =
 
 initialModel : Model
 initialModel =
-    { loginedMemberId = "m2" }
+    { loginedMemberId = "m2", members = sampleMembers, talks = sampleTalks, newTalkTextAreaValue = "" }
 
 
 
@@ -90,7 +99,20 @@ update msg model =
     in
     case msg of
         ClickedPostButton ->
-            ( model, Cmd.none )
+            let
+                newTalkId =
+                    "nT" ++ (model.talks |> List.length |> String.fromInt)
+
+                newTalk =
+                    { id = newTalkId
+                    , message = model.newTalkTextAreaValue
+                    , memberId = model.loginedMemberId
+                    }
+            in
+            ( { model | talks = List.append model.talks [ newTalk ], newTalkTextAreaValue = "" }, Cmd.none )
+
+        ChangedNewTalkTextAreaValue stringValue ->
+            ( { model | newTalkTextAreaValue = stringValue }, Cmd.none )
 
 
 
@@ -107,24 +129,20 @@ view model =
                     [ img [ class "self-img", src "https://4.bp.blogspot.com/-3ndKbo5JNcw/Ws2u06_gISI/AAAAAAABLRk/xz53-cS1koA6iqzrbJ1CntZO0nteFt-qgCLcBGAs/s180-c/food_kebabu_man.png" ] []
                     ]
                 , div [ class "form-right" ]
-                    [ textarea [ class "form-area" ] []
+                    [ textarea [ class "form-area", Html.Attributes.value model.newTalkTextAreaValue, Html.Events.onInput ChangedNewTalkTextAreaValue ] []
                     , button [ class "post-button", onClick ClickedPostButton ] [ text "投稿！" ]
                     ]
                 ]
-            , div [ class "talks" ]
-                [ viewEditingTalk
-                , viewTalk sampleTalk1
-                , viewTalk sampleTalk2
-                ]
+            , div [ class "talks" ] (model.talks |> List.map (viewTalk model.members))
             ]
         ]
 
 
-viewTalk : Talk -> Html Msg
-viewTalk talk =
+viewTalk : List Member -> Talk -> Html Msg
+viewTalk members talk =
     let
         maybeMember =
-            sampleMembers
+            members
                 |> List.filter (\member_ -> member_.id == talk.memberId)
                 >> List.head
     in
