@@ -37,7 +37,6 @@ type alias Talk =
     { id : String
     , memberId : String
     , message : String
-    , createdAt : String
     }
 
 
@@ -77,8 +76,8 @@ initMembers =
 
 initTalks : List Talk
 initTalks =
-    [ Talk "t1" "m1" "ピザ食いてえ" "2018/01/27 13:00"
-    , Talk "t2" "m2" "ちょっと何いってるかわかんないっす" "2018/01/27 13:30"
+    [ Talk "t1" "m1" "ピザ食いてえ"
+    , Talk "t2" "m2" "ちょっと何いってるかわかんないっす"
     ]
 
 
@@ -94,7 +93,7 @@ update msg model =
                     "t" ++ String.fromInt model.nextTalkIdNum
 
                 newTalk =
-                    Talk nextTalkId model.myselfId model.field "2018/01/27 15:30"
+                    Talk nextTalkId model.myselfId model.field
             in
             ( { model
                 | talks = model.talks ++ [ newTalk ]
@@ -140,8 +139,6 @@ viewTalk talk model =
         , div [ class "talk-right" ]
             [ div [ class "poster-name" ] [ text member.name ]
             , div [ class "message" ] [ text talk.message ]
-            , div [ class "talk-footer" ]
-                [ text talk.createdAt ]
             ]
         ]
 
@@ -159,8 +156,7 @@ viewEditingTalk =
             [ div [ class "poster-name" ] [ text "とみざわ" ]
             , textarea [ class "editing-message", value "僕ちゃんとピッザって言いましたよ" ] []
             , div [ class "talk-footer" ]
-                [ text "2018/01/27 13:30"
-                , div [ class "buttons" ]
+                [ div [ class "buttons" ]
                     [ button [ class "edit-button" ] [ text "完了" ]
                     , button [ class "delete-button" ] [ text "削除" ]
                     ]
