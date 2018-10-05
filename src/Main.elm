@@ -1,15 +1,15 @@
-module Main exposing (..)
+module Main exposing (Member, Model, Msg(..), Talk, emptyMember, init, initMembers, initTalks, initialModel, main, update, view, viewEditingTalk, viewTalk)
 
-import Html exposing (Html, button, div, img, program, text, textarea)
-import Html.Attributes exposing (src, value)
+import Browser exposing (element)
+import Html exposing (Html, button, div, img, node, text, textarea)
+import Html.Attributes exposing (class, href, rel, src, value)
 import Html.Events exposing (onClick, onInput)
-import Styles
 
 
-main : Program Never Model Msg
+main : Program () Model Msg
 main =
-    program
-        { init = init
+    element
+        { init = \_ -> init
         , view = view
         , update = update
         , subscriptions = always Sub.none
@@ -37,7 +37,6 @@ type alias Talk =
     { id : String
     , memberId : String
     , message : String
-    , createdAt : String
     }
 
 
@@ -70,16 +69,17 @@ initialModel =
 
 initMembers : List Member
 initMembers =
-    [ Member "m1" "伊達ちゃん" "https://imgcp.aacdn.jp/img-c/680/auto/tipsplus/series/246/20160608_1465380998273.jpg"
-    , Member "m2" "とみざわ" "http://www.hochi.co.jp/photo/20170718/20170718-OHT1I50084-T.jpg"
+    [ Member "m1" "パソコンを持つ人" "https://1.bp.blogspot.com/-LoQvKFjTMCo/W3abXvFwxQI/AAAAAAABOAw/Gh5lV3wyGjwaqI-pV9QP1uPi-JRp6zmoACLcBGAs/s180-c/job_computer_technocrat.png"
+    , Member "m2" "ケバブ屋さん" "https://4.bp.blogspot.com/-3ndKbo5JNcw/Ws2u06_gISI/AAAAAAABLRk/xz53-cS1koA6iqzrbJ1CntZO0nteFt-qgCLcBGAs/s180-c/food_kebabu_man.png"
     ]
 
 
 initTalks : List Talk
 initTalks =
-    [ Talk "t1" "m1" "ピザ食いてえ" "2018/01/27 13:00"
-    , Talk "t2" "m2" "ちょっと何いってるかわかんないっす" "2018/01/27 13:30"
+    [ Talk "t1" "m1" "こんにちは"
+    , Talk "t2" "m2" "ケバブはじめました"
     ]
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -90,32 +90,37 @@ update msg model =
         Add ->
             let
                 nextTalkId =
-                    "t" ++ toString model.nextTalkIdNum
+                    "t" ++ String.fromInt model.nextTalkIdNum
 
                 newTalk =
-                    Talk nextTalkId model.myselfId model.field "2018/01/27 15:30"
+                    Talk nextTalkId model.myselfId model.field
             in
-            { model
+            ( { model
                 | talks = model.talks ++ [ newTalk ]
                 , field = ""
                 , nextTalkIdNum = model.nextTalkIdNum + 1
-            } ! []
+              }
+            , Cmd.none
+            )
 
 
 view : Model -> Html Msg
 view model =
-    div [ Styles.mainWrap ]
-        [ div [ Styles.postForm ]
-            [ div [ Styles.formLeft ]
-                [ img [ Styles.selfImg, src "http://www.hochi.co.jp/photo/20170718/20170718-OHT1I50084-T.jpg" ] []
+    div []
+        [ node "link" [ href "/css/main.css", rel "stylesheet" ] []
+        , div [ class "main-wrap" ]
+            [ div [ class "post-form" ]
+                [ div [ class "form-left" ]
+                    [ img [ class "self-img", src "https://4.bp.blogspot.com/-3ndKbo5JNcw/Ws2u06_gISI/AAAAAAABLRk/xz53-cS1koA6iqzrbJ1CntZO0nteFt-qgCLcBGAs/s180-c/food_kebabu_man.png" ] []
+                    ]
+                , div [ class "form-right" ]
+                    [ textarea [ class "form-area", value model.field, onInput ChangeInput ] []
+                    , button [ class "post-button", onClick Add ] [ text "投稿！" ]
+                    ]
                 ]
-            , div [ Styles.formRight ]
-                [ textarea [ Styles.formArea, value model.field, onInput ChangeInput ] []
-                , button [ Styles.postButton, onClick Add ] [ text "投稿！" ]
-                ]
+            , div [ class "talks" ] <|
+                List.map (\talk -> viewTalk talk model) model.talks
             ]
-        , div [ Styles.talks ]
-            <| List.map (\talk -> viewTalk talk model) model.talks
         ]
 
 
@@ -124,21 +129,18 @@ viewTalk talk model =
     let
         member =
             model.members
-                |> List.filter (\member -> member.id == talk.memberId)
+                |> List.filter (\member_ -> member_.id == talk.memberId)
                 >> List.head
                 >> Maybe.withDefault emptyMember
     in
-    div [ Styles.talk ]
-        [ div [ Styles.talkLeft ]
-            [ img [ Styles.posterImg, src member.imageUrl ] [] ]
-        , div [ Styles.talkRight ]
-            [ div [ Styles.posterName ] [ text member.name ]
-            , div [ Styles.message ] [ text talk.message ]
-            , div [ Styles.talkFooter ]
-                [ text talk.createdAt]
+    div [ class "talk" ]
+        [ div [ class "talk-left" ]
+            [ img [ class "poster-img", src member.imageUrl ] [] ]
+        , div [ class "talk-right" ]
+            [ div [ class "poster-name" ] [ text member.name ]
+            , div [ class "message" ] [ text talk.message ]
             ]
         ]
-
 
 
 
@@ -147,17 +149,16 @@ viewTalk talk model =
 
 viewEditingTalk : Html msg
 viewEditingTalk =
-    div [ Styles.talk ]
-        [ div [ Styles.talkLeft ]
-            [ img [ Styles.posterImg, src "http://www.hochi.co.jp/photo/20170718/20170718-OHT1I50084-T.jpg" ] [] ]
-        , div [ Styles.talkRight ]
-            [ div [ Styles.posterName ] [ text "とみざわ" ]
-            , textarea [ Styles.editingMessage, value "僕ちゃんとピッザって言いましたよ" ] []
-            , div [ Styles.talkFooter ]
-                [ text "2018/01/27 13:30"
-                , div [ Styles.buttons ]
-                    [ button [ Styles.editButton ] [ text "完了" ]
-                    , button [ Styles.deleteButton ] [ text "削除" ]
+    div [ class "talk" ]
+        [ div [ class "talk-left" ]
+            [ img [ class "poster-img", src "https://d19vfv6p26udb5.cloudfront.net/wp-content/uploads/2016/10/03023515/gorilla-752875_960_720-768x544.jpg" ] [] ]
+        , div [ class "talk-right" ]
+            [ div [ class "poster-name" ] [ text "とみざわ" ]
+            , textarea [ class "editing-message", value "僕ちゃんとピッザって言いましたよ" ] []
+            , div [ class "talk-footer" ]
+                [ div [ class "buttons" ]
+                    [ button [ class "edit-button" ] [ text "完了" ]
+                    , button [ class "delete-button" ] [ text "削除" ]
                     ]
                 ]
             ]

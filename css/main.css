@@ -1,0 +1,102 @@
+.main-wrap {
+  margin-top: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 600px;
+}
+
+.post-form {
+  min-height: 120px;
+  border-bottom: solid 2px #c4c4c4;
+}
+
+.form-left {
+  float: left;
+  width: 84px;
+}
+
+.self-img {
+  margin-top: 8px;
+  margin-left: 8px;
+  width: 48px;
+  height: 48px;
+}
+
+.form-right {
+  width: 100%;
+}
+
+.form-area {
+  margin-top: 8px;
+  width: 500px;
+  height: 48px;
+  resize: none;
+  border: solid 2px #c4c4c4;
+}
+
+.post-button {
+  margin-top: 8px;
+  margin-right: 16px;
+  width: 84px;
+  height: 28px;
+  float: right;
+}
+
+.talks {
+  margin-top: 20px;
+}
+
+.talk {
+  margin-top: 20px;
+  border-bottom: solid 1px #c4c4c4;
+}
+
+.talk-left {
+  padding-left: 12px;
+  padding-right: 12px;
+  float: left;
+}
+
+.poster-img {
+  width: 48px;
+  height: 48px;
+}
+
+.talk-right {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.poster-name {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.message {
+  margin-left: 72px;
+  margin-bottom: 16px;
+}
+
+.editing-message {
+  margin-left: 0px;
+  width: 500px;
+  height: 28px;
+  resize: none;
+}
+
+.talk-footer {
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.buttons {
+  float: right;
+}
+
+.edit-button {
+  margin-right: 8px;
+}
+
+.delete-button {
+  background-color: orangered;
+}
