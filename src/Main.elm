@@ -37,7 +37,6 @@ type alias Talk =
     { id : String
     , memberId : String
     , message : String
-    , createdAt : String
     }
 
 
@@ -70,15 +69,15 @@ initialModel =
 
 initMembers : List Member
 initMembers =
-    [ Member "m1" "伊達ちゃん" "https://imgcp.aacdn.jp/img-c/680/auto/tipsplus/series/246/20160608_1465380998273.jpg"
-    , Member "m2" "とみざわ" "https://d19vfv6p26udb5.cloudfront.net/wp-content/uploads/2016/10/03023515/gorilla-752875_960_720-768x544.jpg"
+    [ Member "m1" "パソコンを持つ人" "https://1.bp.blogspot.com/-LoQvKFjTMCo/W3abXvFwxQI/AAAAAAABOAw/Gh5lV3wyGjwaqI-pV9QP1uPi-JRp6zmoACLcBGAs/s180-c/job_computer_technocrat.png"
+    , Member "m2" "ケバブ屋さん" "https://4.bp.blogspot.com/-3ndKbo5JNcw/Ws2u06_gISI/AAAAAAABLRk/xz53-cS1koA6iqzrbJ1CntZO0nteFt-qgCLcBGAs/s180-c/food_kebabu_man.png"
     ]
 
 
 initTalks : List Talk
 initTalks =
-    [ Talk "t1" "m1" "ピザ食いてえ" "2018/01/27 13:00"
-    , Talk "t2" "m2" "ちょっと何いってるかわかんないっす" "2018/01/27 13:30"
+    [ Talk "t1" "m1" "こんにちは"
+    , Talk "t2" "m2" "ケバブはじめました"
     ]
 
 
@@ -94,7 +93,7 @@ update msg model =
                     "t" ++ String.fromInt model.nextTalkIdNum
 
                 newTalk =
-                    Talk nextTalkId model.myselfId model.field "2018/01/27 15:30"
+                    Talk nextTalkId model.myselfId model.field
             in
             ( { model
                 | talks = model.talks ++ [ newTalk ]
@@ -112,7 +111,7 @@ view model =
         , div [ class "main-wrap" ]
             [ div [ class "post-form" ]
                 [ div [ class "form-left" ]
-                    [ img [ class "self-img", src "https://d19vfv6p26udb5.cloudfront.net/wp-content/uploads/2016/10/03023515/gorilla-752875_960_720-768x544.jpg" ] []
+                    [ img [ class "self-img", src "https://4.bp.blogspot.com/-3ndKbo5JNcw/Ws2u06_gISI/AAAAAAABLRk/xz53-cS1koA6iqzrbJ1CntZO0nteFt-qgCLcBGAs/s180-c/food_kebabu_man.png" ] []
                     ]
                 , div [ class "form-right" ]
                     [ textarea [ class "form-area", value model.field, onInput ChangeInput ] []
@@ -140,8 +139,6 @@ viewTalk talk model =
         , div [ class "talk-right" ]
             [ div [ class "poster-name" ] [ text member.name ]
             , div [ class "message" ] [ text talk.message ]
-            , div [ class "talk-footer" ]
-                [ text talk.createdAt ]
             ]
         ]
 
@@ -159,8 +156,7 @@ viewEditingTalk =
             [ div [ class "poster-name" ] [ text "とみざわ" ]
             , textarea [ class "editing-message", value "僕ちゃんとピッザって言いましたよ" ] []
             , div [ class "talk-footer" ]
-                [ text "2018/01/27 13:30"
-                , div [ class "buttons" ]
+                [ div [ class "buttons" ]
                     [ button [ class "edit-button" ] [ text "完了" ]
                     , button [ class "delete-button" ] [ text "削除" ]
                     ]
