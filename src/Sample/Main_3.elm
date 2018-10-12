@@ -1,4 +1,4 @@
-module Main exposing (Member, Model, Msg(..), Talk, init, initialModel, main, update, view, viewEditingTalk, viewTalk)
+module Main_3 exposing (Member, Model, Msg(..), Talk, init, initialModel, main, update, view, viewEditingTalk, viewTalk)
 
 import Browser exposing (element)
 import Html exposing (Html, button, div, img, node, text, textarea)
@@ -25,6 +25,7 @@ type alias Model =
     , members : List Member
     , talks : List Talk
     , newTalkTextAreaValue : String
+    , nextTalkIdNum : Int
     }
 
 
@@ -75,6 +76,7 @@ sampleMembers =
 type Msg
     = ClickedPostButton
     | ChangedNewTalkTextAreaValue String
+    | ClickedTalkDeleteButton String
 
 
 init : ( Model, Cmd Msg )
@@ -84,7 +86,7 @@ init =
 
 initialModel : Model
 initialModel =
-    { loginedMemberId = "m2", members = sampleMembers, talks = sampleTalks, newTalkTextAreaValue = "" }
+    { loginedMemberId = "m2", members = sampleMembers, talks = sampleTalks, newTalkTextAreaValue = "", nextTalkIdNum = 3 }
 
 
 
@@ -101,7 +103,7 @@ update msg model =
         ClickedPostButton ->
             let
                 newTalkId =
-                    "nT" ++ (model.talks |> List.length |> String.fromInt)
+                    "nT" ++ String.fromInt model.nextTalkIdNum
 
                 newTalk =
                     { id = newTalkId
@@ -109,10 +111,19 @@ update msg model =
                     , memberId = model.loginedMemberId
                     }
             in
-            ( { model | talks = List.append model.talks [ newTalk ], newTalkTextAreaValue = "" }, Cmd.none )
+            ( { model
+                | talks = List.append model.talks [ newTalk ]
+                , newTalkTextAreaValue = ""
+                , nextTalkIdNum = model.nextTalkIdNum + 1
+              }
+            , Cmd.none
+            )
 
         ChangedNewTalkTextAreaValue stringValue ->
             ( { model | newTalkTextAreaValue = stringValue }, Cmd.none )
+
+        ClickedTalkDeleteButton talkId ->
+            ( { model | talks = List.filter (\talk -> talk.id /= talkId) model.talks }, Cmd.none )
 
 
 
@@ -133,18 +144,25 @@ view model =
                     , button [ class "post-button", onClick ClickedPostButton ] [ text "投稿！" ]
                     ]
                 ]
-            , div [ class "talks" ] (model.talks |> List.map (viewTalk model.members))
+            , div [ class "talks" ] (List.map (viewTalk model) model.talks)
             ]
         ]
 
 
-viewTalk : List Member -> Talk -> Html Msg
-viewTalk members talk =
+viewTalk : Model -> Talk -> Html Msg
+viewTalk model talk =
     let
         maybeMember =
-            members
+            model.members
                 |> List.filter (\member_ -> member_.id == talk.memberId)
-                >> List.head
+                |> List.head
+
+        deleteButton =
+            if Maybe.map (\member -> member.id) maybeMember == Just model.loginedMemberId then
+                button [ class "delete-button", onClick (ClickedTalkDeleteButton talk.id) ] [ text "削除" ]
+
+            else
+                text ""
     in
     case maybeMember of
         Just member ->
@@ -154,6 +172,11 @@ viewTalk members talk =
                 , div [ class "talk-right" ]
                     [ div [ class "poster-name" ] [ text member.name ]
                     , div [ class "message" ] [ text talk.message ]
+                    , div [ class "talk-footer" ]
+                        [ div [ class "buttons" ]
+                            [ deleteButton
+                            ]
+                        ]
                     ]
                 ]
 

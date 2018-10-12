@@ -1,4 +1,4 @@
-module Main exposing (Member, Model, Msg(..), Talk, init, initialModel, main, update, view, viewEditingTalk, viewTalk)
+module Main_2 exposing (Member, Model, Msg(..), Talk, init, initialModel, main, update, view, viewEditingTalk, viewTalk)
 
 import Browser exposing (element)
 import Html exposing (Html, button, div, img, node, text, textarea)
@@ -24,6 +24,8 @@ type alias Model =
     { loginedMemberId : String
     , members : List Member
     , talks : List Talk
+    , newTalkTextAreaValue : String
+    , nextTalkIdNum : Int
     }
 
 
@@ -73,6 +75,7 @@ sampleMembers =
 
 type Msg
     = ClickedPostButton
+    | ChangedNewTalkTextAreaValue String
 
 
 init : ( Model, Cmd Msg )
@@ -82,7 +85,7 @@ init =
 
 initialModel : Model
 initialModel =
-    { loginedMemberId = "m2", members = sampleMembers, talks = sampleTalks }
+    { loginedMemberId = "m2", members = sampleMembers, talks = sampleTalks, newTalkTextAreaValue = "", nextTalkIdNum = 3 }
 
 
 
@@ -97,7 +100,26 @@ update msg model =
     in
     case msg of
         ClickedPostButton ->
-            ( model, Cmd.none )
+            let
+                newTalkId =
+                    "nT" ++ String.fromInt model.nextTalkIdNum
+
+                newTalk =
+                    { id = newTalkId
+                    , message = model.newTalkTextAreaValue
+                    , memberId = model.loginedMemberId
+                    }
+            in
+            ( { model
+                | talks = List.append model.talks [ newTalk ]
+                , newTalkTextAreaValue = ""
+                , nextTalkIdNum = model.nextTalkIdNum + 1
+              }
+            , Cmd.none
+            )
+
+        ChangedNewTalkTextAreaValue stringValue ->
+            ( { model | newTalkTextAreaValue = stringValue }, Cmd.none )
 
 
 
@@ -114,11 +136,11 @@ view model =
                     [ img [ class "self-img", src "https://4.bp.blogspot.com/-3ndKbo5JNcw/Ws2u06_gISI/AAAAAAABLRk/xz53-cS1koA6iqzrbJ1CntZO0nteFt-qgCLcBGAs/s180-c/food_kebabu_man.png" ] []
                     ]
                 , div [ class "form-right" ]
-                    [ textarea [ class "form-area" ] []
+                    [ textarea [ class "form-area", Html.Attributes.value model.newTalkTextAreaValue, Html.Events.onInput ChangedNewTalkTextAreaValue ] []
                     , button [ class "post-button", onClick ClickedPostButton ] [ text "投稿！" ]
                     ]
                 ]
-            , div [ class "talks" ] (model.talks |> List.map (viewTalk model.members))
+            , div [ class "talks" ] (List.map (viewTalk model.members) model.talks)
             ]
         ]
 
@@ -129,7 +151,7 @@ viewTalk members talk =
         maybeMember =
             members
                 |> List.filter (\member_ -> member_.id == talk.memberId)
-                >> List.head
+                |> List.head
     in
     case maybeMember of
         Just member ->
