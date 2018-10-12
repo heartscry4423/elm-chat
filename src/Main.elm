@@ -112,8 +112,7 @@ view model =
                     ]
                 ]
             , div [ class "talks" ]
-                [ viewEditingTalk
-                , viewTalk sampleTalk1
+                [ viewTalk sampleTalk1
                 , viewTalk sampleTalk2
                 ]
             ]
@@ -126,7 +125,7 @@ viewTalk talk =
         maybeMember =
             sampleMembers
                 |> List.filter (\member_ -> member_.id == talk.memberId)
-                >> List.head
+                |> List.head
     in
     case maybeMember of
         Just member ->

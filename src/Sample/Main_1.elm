@@ -1,4 +1,4 @@
-module Main exposing (Member, Model, Msg(..), Talk, init, initialModel, main, update, view, viewEditingTalk, viewTalk)
+module Main_1 exposing (Member, Model, Msg(..), Talk, init, initialModel, main, update, view, viewEditingTalk, viewTalk)
 
 import Browser exposing (element)
 import Html exposing (Html, button, div, img, node, text, textarea)
@@ -22,6 +22,8 @@ main =
 
 type alias Model =
     { loginedMemberId : String
+    , members : List Member
+    , talks : List Talk
     }
 
 
@@ -80,7 +82,7 @@ init =
 
 initialModel : Model
 initialModel =
-    { loginedMemberId = "m2" }
+    { loginedMemberId = "m2", members = sampleMembers, talks = sampleTalks }
 
 
 
@@ -116,18 +118,18 @@ view model =
                     , button [ class "post-button", onClick ClickedPostButton ] [ text "投稿！" ]
                     ]
                 ]
-            , div [ class "talks" ] (sampleTalks |> List.map viewTalk)
+            , div [ class "talks" ] (List.map (viewTalk model.members) model.talks)
             ]
         ]
 
 
-viewTalk : Talk -> Html Msg
-viewTalk talk =
+viewTalk : List Member -> Talk -> Html Msg
+viewTalk members talk =
     let
         maybeMember =
-            sampleMembers
+            members
                 |> List.filter (\member_ -> member_.id == talk.memberId)
-                >> List.head
+                |> List.head
     in
     case maybeMember of
         Just member ->
